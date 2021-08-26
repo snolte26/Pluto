@@ -1,4 +1,5 @@
 import ctypes
+import sys
 import pyttsx3
 import speech_recognition as sr
 import datetime
@@ -6,10 +7,14 @@ import wikipedia
 import webbrowser
 import os
 import random
-import win32gui
-import win32con
 import requests
 import pyautogui
+
+if sys.platform.startswith('win32'):
+    import win32gui
+    import win32con
+else:
+    exit('Sorry, but platform ' + sys.platform + ' is not supported. :(')
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')

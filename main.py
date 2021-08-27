@@ -1,15 +1,26 @@
 import ctypes
+import sys
 import pyttsx3
 import speech_recognition as sr
 import datetime
 import wikipedia
 import webbrowser
 import os
+from dotenv import load_dotenv
 import random
-import win32gui
-import win32con
 import requests
 import pyautogui
+
+# TODO: Add Linux support <3
+if sys.platform.startswith('win32'):
+    import win32gui
+    import win32con
+else:
+    exit('\nSorry, but platform ' + sys.platform + ' is not supported yet. :(')
+
+# Looks for a .env file and loads it.
+# See: https://pypi.org/project/python-dotenv/
+load_dotenv()
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -39,6 +50,12 @@ def weather():
     base = "https://api.openweathermap.org/data/2.5/weather?"
     city = "Your City Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     apiKey = "Your API Key Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    if os.getenv('OWM_KEY'):
+        apiKey = os.getenv('OWM_KEY')
+    else:
+        print('Please set your Open Weather Map API key as an environment variable -- either on your system or in a file\
+        named `.env` in the project root.')
+        print('More info: https://pypi.org/project/python-dotenv/')
     url = base + "q=" + city + "&appid=" + apiKey
     response = requests.get(url)
 

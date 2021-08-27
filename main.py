@@ -48,7 +48,7 @@ def wishMe():
 def weather():
 
     base = "https://api.openweathermap.org/data/2.5/weather?"
-    apiKey = "Your API Key Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    apiKey = ""
     if os.getenv('OWN_KEY'):
         apiKey = os.getenv('OWN_KEY')
     else:

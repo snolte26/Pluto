@@ -48,7 +48,6 @@ def wishMe():
 def weather():
 
     base = "https://api.openweathermap.org/data/2.5/weather?"
-    city = "Your City Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     apiKey = "Your API Key Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     if os.getenv('OWM_KEY'):
         apiKey = os.getenv('OWM_KEY')
@@ -115,8 +114,10 @@ def main():
         elif 'open github' in query:
             webbrowser.open_new("github.com")
 
-        elif 'weather' in query or 'temperature' in query or 'today reports' in query:
-            weather()
+        elif 'weather' in query or 'temperature' in query:
+            speak("For what city would you like the weather?")
+            city = takeCommands().lower()
+            weather(city)
 
         elif 'who is' in query or 'how to' in query or 'what is' in query:
             speak('Searching Wikipedia...')
@@ -189,6 +190,11 @@ def main():
                 return os.system('cls')
 
             clear()
+        elif "show me this guy's balls please" in query:
+            speak("ok, here is this guys balls")
+            webbrowser.open_new(
+                'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
+
 
         elif 'what can you do' in query:
             speak("I can give you the time, give info from wikipedia, give you the weather, play music, lock things "

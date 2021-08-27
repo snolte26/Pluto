@@ -49,8 +49,8 @@ def weather():
 
     base = "https://api.openweathermap.org/data/2.5/weather?"
     apiKey = "Your API Key Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    if os.getenv('OWM_KEY'):
-        apiKey = os.getenv('OWM_KEY')
+    if os.getenv('OWN_KEY'):
+        apiKey = os.getenv('OWN_KEY')
     else:
         print('Please set your Open Weather Map API key as an environment variable -- either on your system or in a file\
         named `.env` in the project root.')

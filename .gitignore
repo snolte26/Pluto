@@ -4,3 +4,7 @@
 
 # Environment variables should be ignored
 .env
+
+# Python virtual environment folders
+.venv
+venv/

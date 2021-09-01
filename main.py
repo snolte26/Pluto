@@ -11,12 +11,18 @@ import random
 import requests
 import pyautogui
 
+import setup
+
 # TODO: Add Linux support <3
 if sys.platform.startswith('win32'):
     import win32gui
     import win32con
 else:
     exit('\nSorry, but platform ' + sys.platform + ' is not supported yet. :(')
+
+# Set up environment if needed
+if not os.path.exists('./.env') or not os.getenv('OWM_KEY'):
+    setup.init_env()
 
 # Looks for a .env file and loads it.
 # See: https://pypi.org/project/python-dotenv/
@@ -49,12 +55,19 @@ def weather():
 
     base = "https://api.openweathermap.org/data/2.5/weather?"
     apiKey = ""
-    if os.getenv('OWN_KEY'):
-        apiKey = os.getenv('OWN_KEY')
-    else:
-        print('Please set your Open Weather Map API key as an environment variable -- either on your system or in a file\
-        named `.env` in the project root.')
-        print('More info: https://pypi.org/project/python-dotenv/')
+
+    # TODO: add city to environment variable - preferably automated in setup.py if it doesn't exist
+    # For now, you can edit this city variable instead
+    city = "YOUR_CITY_HERE"
+
+    if os.getenv('OWM_CITY'):
+        city = os.getenv('OWM_CITY')
+
+    if not os.getenv('OWM_KEY'):
+        setup.init_env()
+
+    apiKey = os.getenv('OWM_KEY')
+
     url = base + "q=" + city + "&appid=" + apiKey
     response = requests.get(url)
 

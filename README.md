@@ -1,4 +1,25 @@
 # PyJARVIS
 a python voice assistant
 
-In the .env file, you'll have to set your own Open Weather Map API key
+
+----------------------------------
+
+This script will check for a `.env` file in the project root.
+It should contain a line such as:
+```
+OWM_KEY = <YOUR_API_KEY_HERE>
+```
+Replace `<YOUR_API_KEY>` with your Open Weather Map API key.
+
+**NOTE: It's `OWM_KEY`, not `OWN_KEY` (OWM stands for Open Weather Map)**
+
+If you don't have one yet:
+1. Go to https://openweathermap.org/
+2. Create an account if you haven't yet
+3. Click the [API Keys](https://home.openweathermap.org/api_keys) tab
+4. Create a key by naming it and clicking "Generate"
+
+If you don't have this environment variable set, the script will ask for one
+on the command line and do all of this for you.
+
+----------------------------------

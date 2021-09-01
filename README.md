@@ -1,7 +1,6 @@
 # PyJARVIS
 a python voice assistant
 
-
 ----------------------------------
 
 This script will check for a `.env` file in the project root.

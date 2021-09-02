@@ -8,8 +8,8 @@ def init_env():
     load_dotenv()
 
     if os.getenv('OWM_KEY'):
-        print('\nsetup_env function ran, but Open Weather Map key is already set!')
-        print('OWM_KEY is: ' + os.getenv('OWM_KEY'))
+        #print('\nsetup_env function ran, but Open Weather Map key is already set!')
+        #print('OWM_KEY is: ' + os.getenv('OWM_KEY'))
         return
 
     # If there is no .env file, create it

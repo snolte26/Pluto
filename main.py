@@ -30,7 +30,7 @@ load_dotenv()
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id) # 0 is male, 1 is female. I went with female. -snolte26
+engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. I went with female. -snolte26
 engine.setProperty('rate', 155)
 
 
@@ -52,16 +52,16 @@ def wishMe():
 
 
 def weather(zip):
-
     base = "https://api.openweathermap.org/data/2.5/weather?"
+    '''
     apiKey = ""
-
+    '''
     # TODO: add zipcode to environment variable - preferably automated in setup.py if it doesn't exist
-    # For now, you can edit this city variable instead
-
+    # For now, you can edit this zip code variable instead
+    '''
     if os.getenv('OWM_ZIP'):
         zipcode = os.getenv('OWM_ZIP')
-
+    '''
     if not os.getenv('OWM_KEY'):
         setup.init_env()
 
@@ -72,12 +72,12 @@ def weather(zip):
 
     if response.status_code == 200:
         data = response.json()
-        main = data['main']
-        tmpma = main['temp']
-        humidity = main['humidity']
+        Main = data['main']
+        tmpma = Main['temp']
+        humidity = Main['humidity']
         temperature = int((((tmpma - 273.15) * 9) / 5) + 32)
-        tmpmax = main['temp_max']
-        tmpmin = main['temp_min']
+        tmpmax = Main['temp_max']
+        tmpmin = Main['temp_min']
         tempMax = int((((tmpmax - 273.15) * 9) / 5) + 32)
         tempMin = int((((tmpmin - 273.15) * 9) / 5) + 32)
         report = data['weather']
@@ -142,9 +142,9 @@ def main():
             music_dir = "C:\\Users\\13174\\PycharmProjects\\MusicPlayer\\Music"  # add your music dir
             songs = os.listdir(music_dir)
             chosenSong = random.randint(1, len(songs))
-            os.system(music_dir + "\\" + songs[chosenSong-1])
+            os.system(music_dir + "\\" + songs[chosenSong - 1])
             # os.system(os.path.join(music_dir, songs[1]))
-            speak('ok sir. playing ' + songs[chosenSong-1])
+            speak('ok sir. playing ' + songs[chosenSong - 1])
 
         elif 'the time' in query or 'what is time' in query:
             strTime = datetime.datetime.now().strftime("%H:%M:%S")
@@ -161,7 +161,7 @@ def main():
             Minimize = win32gui.GetForegroundWindow()
             win32gui.ShowWindow(Minimize, win32con.SW_MINIMIZE)
 
-        elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize window' in\
+        elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize window' in \
                 query:
             # full in window
             speak("sure.")
@@ -206,7 +206,6 @@ def main():
             speak("ok, here is this guys balls")
             webbrowser.open_new(
                 'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
-
 
         elif 'what can you do' in query:
             speak("I can give you the time, give info from wikipedia, give you the weather, play music, lock things "

@@ -51,24 +51,23 @@ def wishMe():
     speak("I am JARVIS, how may I help you?")
 
 
-def weather():
+def weather(zip):
 
     base = "https://api.openweathermap.org/data/2.5/weather?"
     apiKey = ""
 
-    # TODO: add city to environment variable - preferably automated in setup.py if it doesn't exist
+    # TODO: add zipcode to environment variable - preferably automated in setup.py if it doesn't exist
     # For now, you can edit this city variable instead
-    city = "YOUR_CITY_HERE"
 
-    if os.getenv('OWM_CITY'):
-        city = os.getenv('OWM_CITY')
+    if os.getenv('OWM_ZIP'):
+        zipcode = os.getenv('OWM_ZIP')
 
     if not os.getenv('OWM_KEY'):
         setup.init_env()
 
     apiKey = os.getenv('OWM_KEY')
 
-    url = base + "q=" + city + "&appid=" + apiKey
+    url = base + "zip=" + zip + "&appid=" + apiKey
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -128,9 +127,9 @@ def main():
             webbrowser.open_new("github.com")
 
         elif 'weather' in query or 'temperature' in query:
-            speak("For what city would you like the weather?")
-            city = takeCommands().lower()
-            weather(city)
+            speak("For what zipcode would you like the weather?")
+            zip = takeCommands()
+            weather(zip)
 
         elif 'who is' in query or 'how to' in query or 'what is' in query:
             speak('Searching Wikipedia...')

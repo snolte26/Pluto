@@ -270,6 +270,6 @@ def main():
                   "down, open certain pages, take screenshots, and other small tasks. I try to help you where I can")
 
 
-# run main.py
+# run main(), is start of script
 if __name__ == '__main__':
     main()

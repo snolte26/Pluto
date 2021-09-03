@@ -11,28 +11,29 @@ import random
 import requests
 import pyautogui
 
-# Importing setup.py for environment variable setup
-import setup
+# Importing configure_env.py for environment variable setup
+import configure_env
 
-# TODO: Add Linux support <3
-# Checks to see if you are running windows, then imports some more modules,
-# or throws a fit if you are not, for now
-if sys.platform.startswith('win32'):
+is_windows = sys.platform.startswith('win32')
+if is_windows:
     import win32gui
     import win32con
-else:
-    exit('\nSorry, but platform ' + sys.platform + ' is not supported yet. :(')
 
 # Set up environment if needed
 if not os.path.exists('./.env') or not os.getenv('OWM_KEY'):
-    setup.init_env()
+    configure_env.initialize()
 
 # Looks for a .env file and loads it.
 # See: https://pypi.org/project/python-dotenv/
 load_dotenv()
 
 # Setting up the text-to-speech engine
-engine = pyttsx3.init('sapi5')
+if is_windows:
+    engine = pyttsx3.init('sapi5')
+else:
+    # espeak is for linux
+    engine = pyttsx3.init('espeak')
+
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. I went with female. -snolte26
 engine.setProperty('rate', 155)
@@ -61,7 +62,7 @@ def weather(zip):
     base = "https://api.openweathermap.org/data/2.5/weather?"
     ''' apiKey = "" '''
 
-    # TODO: add zipcode to environment variable - preferably automated in setup.py if it doesn't exist
+    # TODO: add zipcode to environment variable - preferably automated in configure_env.py if it doesn't exist
     # For now, you can edit this zip code variable instead
     '''
     if os.getenv('OWM_ZIP'):
@@ -69,7 +70,7 @@ def weather(zip):
     '''
     # Setup OWM_KEY in the .env if there is none
     if not os.getenv('OWM_KEY'):
-        setup.init_env()
+        configure_env.initialize()
 
     apiKey = os.getenv('OWM_KEY')
 

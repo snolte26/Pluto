@@ -10,18 +10,23 @@ from dotenv import load_dotenv
 import random
 import requests
 import pyautogui
+import types
 
 # Importing config.py for environment variable setup
 import config
 
+
+is_windows = sys.platform.startswith('win32')
+
 # TODO: Add Linux support <3
 # Checks to see if you are running windows, then imports some more modules,
 # or throws a fit if you are not, for now
-if sys.platform.startswith('win32'):
+if is_windows:
     import win32gui
     import win32con
 else:
-    exit('\nSorry, but platform ' + sys.platform + ' is not supported yet. :(')
+    print('\nThe ' + sys.platform + ' platform is not fully supported yet. Some features may work -- no guarantees.')
+    print('Continuing...')
 
 # Looks for a .env file and loads it.
 # See: https://pypi.org/project/python-dotenv/
@@ -29,20 +34,34 @@ load_dotenv()
 
 # Set up environment if needed
 if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH'):
-    config.init_env()
+    config.initialize()
 
 
-# Setting up the text-to-speech engine
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. I went with female. -snolte26
-engine.setProperty('rate', 155)
+'''
+This top-level empty object will hold the speech engine to be used. This starts out as empty, then gets populated
+later. What gets populated depends on the current OS. `types.SimpleNamespace()` is the python way of instantiating
+an empty object that allows creating and setting attributes.
+See: https://stackoverflow.com/questions/19476816/creating-an-empty-object-in-python
+'''
+speech = types.SimpleNamespace()
+
+
+def init_speech_engine_windows():
+    speech.engine = pyttsx3.init('sapi5')
+    voices = speech.engine.getProperty('voices')
+    speech.engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. I went with female. -snolte26
+    speech.engine.setProperty('rate', 155)
+
+
+def init_speech_engine_linux():
+    speech.engine = pyttsx3.init('espeak')
+    speech.engine.setProperty('voice', 'default')
 
 
 # Takes string input, then outputs that string as speech
 def speak(audio):
-    engine.say(audio)
-    engine.runAndWait()
+    speech.engine.say(audio)
+    speech.engine.runAndWait()
 
 
 def wishMe():
@@ -108,7 +127,7 @@ def takeCommands():
 
     try:
         print("Recognizing...")
-        query = r.recognize_google(audio, language='en-in')
+        query = r.recognize_google(audio, language='en-US')
         print(f"You said: {query}\n")
     except Exception:
         print("Say that again, please...")
@@ -157,7 +176,7 @@ def main():
             # TODO: Add music directory to environment variables
 
             if not os.getenv('MUSIC_PATH'):
-                config.init_env()
+                config.initialize()
 
             musicDir = os.getenv('MUSIC_PATH')
 

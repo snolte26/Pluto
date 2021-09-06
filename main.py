@@ -154,7 +154,7 @@ def main():
         # Playing music
         elif 'play music' in query or 'play some music' in query:
             # TODO: Add music directory to environment variables
-            music_dir = "C:\\Users\\13174\\PycharmProjects\\MusicPlayer\\Music"  # add your music dir
+            music_dir = ""  # add your music dir
             songs = os.listdir(music_dir)
             chosenSong = random.randint(1, len(songs))
             speak('ok sir. playing ' + songs[chosenSong - 1])

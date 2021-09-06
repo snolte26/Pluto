@@ -7,8 +7,11 @@ This script will check for a `.env` file in the project root.
 It should contain a line such as:
 ```
 OWM_KEY = <YOUR_API_KEY_HERE>
+MUSIC_PATH = <YOUR_MUSIC_PATH_HERE>
 ```
 Replace `<YOUR_API_KEY>` with your Open Weather Map API key.
+
+Replace `<YOUR_MUSIC_PATH_HERE>` with your Music Directory.
 
 **NOTE: It's `OWM_KEY`, not `OWN_KEY` (OWM stands for Open Weather Map)**
 

@@ -160,10 +160,9 @@ def main():
                 setup.init_env()
 
             musicDir = os.getenv('MUSIC_PATH')
-            songs = os.listdir(musicDir)
 
             # music_dir = ""  # add your music dir
-            songs = os.listdir(music_dir)
+            songs = os.listdir(musicDir)
 
             chosenSong = random.randint(1, len(songs))
             speak('ok sir. playing ' + songs[chosenSong - 1])

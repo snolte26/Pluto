@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 
+
 # TODO: Check for OWM_CITY and/or OWM_ZIPCODE environment variable
 def initialize():
     print('\nInitializing Environment...')
@@ -11,19 +12,17 @@ def initialize():
         # print('\nsetup_env function ran, but Open Weather Map key is already set!')
         # print('OWM_KEY is: ' + os.getenv('OWM_KEY'))
         return
-    '''
-    if os.getenv('MUSIC_PATH'):
-        # print('\nsetup_env function ran, but Open Weather Map key is already set!')
-        # print('MUSIC_PATH is: ' + os.getenv('MUSIC_PATH'))
-        return
-    '''
+
     # If there is no .env file, create it
     if not os.path.exists('./.env'):
         env_file = open('.env', 'w')
         env_file.close()
 
-    set_new_weather_key()
-    set_new_music_path()
+    if not os.getenv('OWM_KEY'):
+        set_new_weather_key()
+
+    if not os.getenv('MUSIC_PATH'):
+        set_new_music_path()
 
 
 def set_new_weather_key():
@@ -80,6 +79,8 @@ def set_new_music_path():
         env_file.write(f'\nMUSIC_PATH={music_path}')
 
     env_file.close()
+
+    load_dotenv()
 
     if os.getenv('MUSIC_PATH'):
         print('Path has been set to environment!')

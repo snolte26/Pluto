@@ -11,8 +11,8 @@ import random
 import requests
 import pyautogui
 
-# Importing setup.py for environment variable setup
-import setup
+# Importing config.py for environment variable setup
+import config
 
 # TODO: Add Linux support <3
 # Checks to see if you are running windows, then imports some more modules,
@@ -29,7 +29,7 @@ load_dotenv()
 
 # Set up environment if needed
 if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH'):
-    setup.init_env()
+    config.init_env()
 
 
 # Setting up the text-to-speech engine
@@ -62,7 +62,7 @@ def weather(zip):
     base = "https://api.openweathermap.org/data/2.5/weather?"
     ''' apiKey = "" '''
 
-    # TODO: add zipcode to environment variable - preferably automated in setup.py if it doesn't exist
+    # TODO: add zipcode to environment variable - preferably automated in config.py if it doesn't exist
     # For now, you can edit this zip code variable instead
     '''
     if os.getenv('OWM_ZIP'):
@@ -70,7 +70,7 @@ def weather(zip):
     '''
     # Setup OWM_KEY in the .env if there is none
     if not os.getenv('OWM_KEY'):
-        setup.init_env()
+        config.init_env()
 
     apiKey = os.getenv('OWM_KEY')
 
@@ -157,7 +157,7 @@ def main():
             # TODO: Add music directory to environment variables
 
             if not os.getenv('MUSIC_PATH'):
-                setup.init_env()
+                config.init_env()
 
             musicDir = os.getenv('MUSIC_PATH')
 

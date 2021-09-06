@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 
 # TODO: Check for OWM_CITY and/or OWM_ZIPCODE environment variable
-def init_env():
+def initialize():
     print('\nInitializing Environment...')
 
     load_dotenv()

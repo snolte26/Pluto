@@ -154,7 +154,6 @@ def main():
 
         # Playing music
         elif 'play music' in query or 'play some music' in query:
-            # TODO: Add music directory to environment variables
             if not os.getenv('MUSIC_PATH'):
                 setup.init_env()
 

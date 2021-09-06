@@ -154,11 +154,16 @@ def main():
 
         # Playing music
         elif 'play music' in query or 'play some music' in query:
+            # TODO: Add music directory to environment variables
+
             if not os.getenv('MUSIC_PATH'):
                 setup.init_env()
 
             musicDir = os.getenv('MUSIC_PATH')
+
+            # music_dir = ""  # add your music dir
             songs = os.listdir(musicDir)
+
             chosenSong = random.randint(1, len(songs))
             speak('ok sir. playing ' + songs[chosenSong - 1])
             os.system(musicDir + "\\" + songs[chosenSong - 1])

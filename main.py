@@ -121,6 +121,8 @@ def takeCommands():
     r = sr.Recognizer()
 
     with sr.Microphone() as source:
+        # print("Adjusting for ambient noise...\n")
+        # r.adjust_for_ambient_noise(source)
         print("Listening...")
         r.pause_threshold = 1
         audio = r.listen(source)
@@ -137,6 +139,11 @@ def takeCommands():
 
 # Main function
 def main():
+    if is_windows:
+        init_speech_engine_windows()
+    else:
+        init_speech_engine_linux()
+
     wishMe()
     while True:
         query = takeCommands().lower()
@@ -173,8 +180,6 @@ def main():
 
         # Playing music
         elif 'play music' in query or 'play some music' in query:
-            # TODO: Add music directory to environment variables
-
             if not os.getenv('MUSIC_PATH'):
                 config.initialize()
 
@@ -182,10 +187,14 @@ def main():
 
             # music_dir = ""  # add your music dir
             songs = os.listdir(musicDir)
-
             chosenSong = random.randint(1, len(songs))
             speak('ok sir. playing ' + songs[chosenSong - 1])
-            os.system(musicDir + "\\" + songs[chosenSong - 1])
+
+            slash = "\\"
+            if not is_windows:
+                slash = "/"
+
+            os.system(musicDir + slash + songs[chosenSong - 1])
             # os.system(os.path.join(music_dir, songs[1]))
 
         elif 'the time' in query or 'what is time' in query:

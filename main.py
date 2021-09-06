@@ -23,13 +23,14 @@ if sys.platform.startswith('win32'):
 else:
     exit('\nSorry, but platform ' + sys.platform + ' is not supported yet. :(')
 
-# Set up environment if needed
-if not os.path.exists('./.env') or not os.getenv('OWM_KEY'):
-    setup.init_env()
-
 # Looks for a .env file and loads it.
 # See: https://pypi.org/project/python-dotenv/
 load_dotenv()
+
+# Set up environment if needed
+if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH'):
+    setup.init_env()
+
 
 # Setting up the text-to-speech engine
 engine = pyttsx3.init('sapi5')
@@ -46,7 +47,7 @@ def speak(audio):
 
 def wishMe():
     hour = int(datetime.datetime.now().hour)
-    if 0 <= hour <= 12:
+    if 0 <= hour <= 11:
         speak("Good Morning!")
     elif 12 <= hour < 18:
         speak("Good Afternoon!")
@@ -154,11 +155,19 @@ def main():
         # Playing music
         elif 'play music' in query or 'play some music' in query:
             # TODO: Add music directory to environment variables
-            music_dir = ""  # add your music dir
+
+            if not os.getenv('MUSIC_PATH'):
+                setup.init_env()
+
+            musicDir = os.getenv('MUSIC_PATH')
+            songs = os.listdir(musicDir)
+
+            # music_dir = ""  # add your music dir
             songs = os.listdir(music_dir)
+
             chosenSong = random.randint(1, len(songs))
             speak('ok sir. playing ' + songs[chosenSong - 1])
-            os.system(music_dir + "\\" + songs[chosenSong - 1])
+            os.system(musicDir + "\\" + songs[chosenSong - 1])
             # os.system(os.path.join(music_dir, songs[1]))
 
         elif 'the time' in query or 'what is time' in query:

@@ -160,7 +160,6 @@ def main():
                 setup.init_env()
 
             musicDir = os.getenv('MUSIC_PATH')
-            songs = os.listdir(musicDir)
 
             # music_dir = ""  # add your music dir
             songs = os.listdir(musicDir)

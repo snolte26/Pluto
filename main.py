@@ -126,9 +126,12 @@ def takeCommands(beep):
         print("Listening...")
         r.pause_threshold = 1
         if beep:
-            frequency = 2500
-            duration = 250  # duration is in milliseconds, 250 ms = .25 seconds
-            winsound.Beep(frequency, duration)
+            if is_windows:
+                frequency = 2500
+                duration = 250  # duration is in milliseconds, 250 ms = .25 seconds
+                winsound.Beep(frequency, duration)
+            else:
+                print('\a')
             audio = r.listen(source)
         else:
             audio = r.listen(source)

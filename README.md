@@ -13,8 +13,6 @@ Replace `<YOUR_API_KEY>` with your Open Weather Map API key.
 
 Replace `<YOUR_MUSIC_PATH_HERE>` with your Music Directory.
 
-**NOTE: It's `OWM_KEY`, not `OWN_KEY` (OWM stands for Open Weather Map)**
-
 If you don't have one yet:
 1. Go to https://openweathermap.org/
 2. Create an account if you haven't yet

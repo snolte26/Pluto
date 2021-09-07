@@ -10,18 +10,23 @@ from dotenv import load_dotenv
 import random
 import requests
 import pyautogui
+import types
 
-# Importing setup.py for environment variable setup
-import setup
+# Importing config.py for environment variable setup
+import config
+
+
+is_windows = sys.platform.startswith('win32')
 
 # TODO: Add Linux support <3
 # Checks to see if you are running windows, then imports some more modules,
 # or throws a fit if you are not, for now
-if sys.platform.startswith('win32'):
+if is_windows:
     import win32gui
     import win32con
 else:
-    exit('\nSorry, but platform ' + sys.platform + ' is not supported yet. :(')
+    print('\nThe ' + sys.platform + ' platform is not fully supported yet. Some features may work -- no guarantees.')
+    print('Continuing...')
 
 # Looks for a .env file and loads it.
 # See: https://pypi.org/project/python-dotenv/
@@ -29,20 +34,34 @@ load_dotenv()
 
 # Set up environment if needed
 if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH'):
-    setup.init_env()
+    config.initialize()
 
 
-# Setting up the text-to-speech engine
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. I went with female. -snolte26
-engine.setProperty('rate', 155)
+'''
+This top-level empty object will hold the speech engine to be used. This starts out as empty, then gets populated
+later. What gets populated depends on the current OS. `types.SimpleNamespace()` is the python way of instantiating
+an empty object that allows creating and setting attributes.
+See: https://stackoverflow.com/questions/19476816/creating-an-empty-object-in-python
+'''
+speech = types.SimpleNamespace()
+
+
+def init_speech_engine_windows():
+    speech.engine = pyttsx3.init('sapi5')
+    voices = speech.engine.getProperty('voices')
+    speech.engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. I went with female. -snolte26
+    speech.engine.setProperty('rate', 155)
+
+
+def init_speech_engine_linux():
+    speech.engine = pyttsx3.init('espeak')
+    speech.engine.setProperty('voice', 'default')
 
 
 # Takes string input, then outputs that string as speech
 def speak(audio):
-    engine.say(audio)
-    engine.runAndWait()
+    speech.engine.say(audio)
+    speech.engine.runAndWait()
 
 
 def wishMe():
@@ -62,7 +81,7 @@ def weather(zip):
     base = "https://api.openweathermap.org/data/2.5/weather?"
     ''' apiKey = "" '''
 
-    # TODO: add zipcode to environment variable - preferably automated in setup.py if it doesn't exist
+    # TODO: add zipcode to environment variable - preferably automated in config.py if it doesn't exist
     # For now, you can edit this zip code variable instead
     '''
     if os.getenv('OWM_ZIP'):
@@ -70,7 +89,7 @@ def weather(zip):
     '''
     # Setup OWM_KEY in the .env if there is none
     if not os.getenv('OWM_KEY'):
-        setup.init_env()
+        config.init_env()
 
     apiKey = os.getenv('OWM_KEY')
 
@@ -102,13 +121,15 @@ def takeCommands():
     r = sr.Recognizer()
 
     with sr.Microphone() as source:
+        # print("Adjusting for ambient noise...\n")
+        # r.adjust_for_ambient_noise(source)
         print("Listening...")
         r.pause_threshold = 1
         audio = r.listen(source)
 
     try:
         print("Recognizing...")
-        query = r.recognize_google(audio, language='en-in')
+        query = r.recognize_google(audio, language='en-US')
         print(f"You said: {query}\n")
     except Exception:
         print("Say that again, please...")
@@ -118,6 +139,11 @@ def takeCommands():
 
 # Main function
 def main():
+    if is_windows:
+        init_speech_engine_windows()
+    else:
+        init_speech_engine_linux()
+
     wishMe()
     while True:
         query = takeCommands().lower()
@@ -154,19 +180,21 @@ def main():
 
         # Playing music
         elif 'play music' in query or 'play some music' in query:
-            # TODO: Add music directory to environment variables
-
             if not os.getenv('MUSIC_PATH'):
-                setup.init_env()
+                config.initialize()
 
             musicDir = os.getenv('MUSIC_PATH')
 
             # music_dir = ""  # add your music dir
             songs = os.listdir(musicDir)
-
             chosenSong = random.randint(1, len(songs))
             speak('ok sir. playing ' + songs[chosenSong - 1])
-            os.system(musicDir + "\\" + songs[chosenSong - 1])
+
+            slash = "\\"
+            if not is_windows:
+                slash = "/"
+
+            os.system(musicDir + slash + songs[chosenSong - 1])
             # os.system(os.path.join(music_dir, songs[1]))
 
         elif 'the time' in query or 'what is time' in query:

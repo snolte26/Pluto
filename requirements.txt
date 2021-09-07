@@ -3,4 +3,4 @@ pyautogui==0.9.53
 python-dotenv==0.19.0
 pyttsx3==2.90
 wikipedia==1.4.0
-win32gui==221.6
+win32gui>=221.5

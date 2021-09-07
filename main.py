@@ -24,6 +24,7 @@ is_windows = sys.platform.startswith('win32')
 if is_windows:
     import win32gui
     import win32con
+    import winsound
 else:
     print('\nThe ' + sys.platform + ' platform is not fully supported yet. Some features may work -- no guarantees.')
     print('Continuing...')
@@ -79,7 +80,6 @@ def wishMe():
 # Weather function
 def weather(zip):
     base = "https://api.openweathermap.org/data/2.5/weather?"
-    ''' apiKey = "" '''
 
     # TODO: add zipcode to environment variable - preferably automated in config.py if it doesn't exist
     # For now, you can edit this zip code variable instead
@@ -117,7 +117,7 @@ def weather(zip):
 
 
 # Listening to the command
-def takeCommands():
+def takeCommands(beep):
     r = sr.Recognizer()
 
     with sr.Microphone() as source:
@@ -125,7 +125,13 @@ def takeCommands():
         # r.adjust_for_ambient_noise(source)
         print("Listening...")
         r.pause_threshold = 1
-        audio = r.listen(source)
+        if beep:
+            frequency = 2500
+            duration = 250  # duration is in milliseconds, 250 ms = .25 seconds
+            winsound.Beep(frequency, duration)
+            audio = r.listen(source)
+        else:
+            audio = r.listen(source)
 
     try:
         print("Recognizing...")
@@ -139,6 +145,7 @@ def takeCommands():
 
 # Main function
 def main():
+    WAKE = "jarvis"
     if is_windows:
         init_speech_engine_windows()
     else:
@@ -146,128 +153,132 @@ def main():
 
     wishMe()
     while True:
-        query = takeCommands().lower()
+        wakeUp = takeCommands(False).lower()
+        if WAKE in wakeUp:
 
-        # Begin looking at what user has said
+    # while True:
+            query = takeCommands(True).lower()
 
-        if 'wikipedia' in query:
-            speak('Searching Wikipedia...')
-            query = query.replace("wikipedia", "")
-            results = wikipedia.summary(query, sentences=2)
-            speak("Sir, " + results)
-            print(results)
+            # Begin looking at what user has said
 
-        elif 'open youtube' in query:
-            webbrowser.open_new("youtube.com")
-        elif 'open stackoverflow' in query:
-            webbrowser.open_new("stackoverflow.com")
-        elif 'open github' in query:
-            webbrowser.open_new("github.com")
+            if 'wikipedia' in query:
+                speak('Searching Wikipedia...')
+                query = query.replace("wikipedia", "")
+                results = wikipedia.summary(query, sentences=2)
+                speak("Sir, " + results)
+                print(results)
 
-        # If the user wants to know the weather
-        elif 'weather' in query or 'temperature' in query:
-            speak("For what zipcode would you like the weather?")
-            zip = takeCommands()
-            weather(zip)
+            elif 'open youtube' in query:
+                webbrowser.open_new("youtube.com")
+            elif 'open stackoverflow' in query:
+                webbrowser.open_new("stackoverflow.com")
+            elif 'open github' in query:
+                webbrowser.open_new("github.com")
 
-        # Basically another wikipedia call, but is like asking a question
-        elif 'who is' in query or 'how to' in query or 'what is' in query:
-            speak('Searching Wikipedia...')
-            resultsw = wikipedia.summary(query, sentences=2)
-            speak("Sir, " + resultsw)
-            speak("That's it")
-            print(resultsw)
+            # If the user wants to know the weather
+            elif 'weather' in query or 'temperature' in query:
+                speak("For what zipcode would you like the weather?")
+                zip = takeCommands(True)
+                weather(zip)
 
-        # Playing music
-        elif 'play music' in query or 'play some music' in query:
-            if not os.getenv('MUSIC_PATH'):
-                config.initialize()
+            # Basically another wikipedia call, but is like asking a question
+            elif 'who is' in query or 'how to' in query or 'what is' in query:
+                speak('Searching Wikipedia...')
+                resultsw = wikipedia.summary(query, sentences=2)
+                speak("Sir, " + resultsw)
+                speak("That's it")
+                print(resultsw)
 
-            musicDir = os.getenv('MUSIC_PATH')
+            # Playing music
+            elif 'play music' in query or 'play some music' in query:
+                if not os.getenv('MUSIC_PATH'):
+                    config.initialize()
 
-            # music_dir = ""  # add your music dir
-            songs = os.listdir(musicDir)
-            chosenSong = random.randint(1, len(songs))
-            speak('ok sir. playing ' + songs[chosenSong - 1])
+                musicDir = os.getenv('MUSIC_PATH')
 
-            slash = "\\"
-            if not is_windows:
-                slash = "/"
+                # music_dir = ""  # add your music dir
+                songs = os.listdir(musicDir)
+                chosenSong = random.randint(1, len(songs))
+                speak('ok sir. playing ' + songs[chosenSong - 1])
 
-            os.system(musicDir + slash + songs[chosenSong - 1])
-            # os.system(os.path.join(music_dir, songs[1]))
+                slash = "\\"
+                if not is_windows:
+                    slash = "/"
 
-        elif 'the time' in query or 'what is time' in query:
-            strTime = datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"Sir, the time is {strTime}")
+                os.system(musicDir + slash + songs[chosenSong - 1])
+                # os.system(os.path.join(music_dir, songs[1]))
 
-        # Opens Firefox, really only works if you have firefox
-        # TODO: Support for default browser? idk
-        elif 'open firefox' in query:
-            speak("opening firefox ")
-            codePathf = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
-            os.startfile(codePathf)
+            elif 'the time' in query or 'what is time' in query:
+                strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                speak(f"Sir, the time is {strTime}")
 
-        elif 'hide window' in query or 'hide work' in query or 'change window' in query or 'minimise window' in query:
-            # close in window
-            speak("ok.")
-            Minimize = win32gui.GetForegroundWindow()
-            win32gui.ShowWindow(Minimize, win32con.SW_MINIMIZE)
+            # Opens Firefox, really only works if you have firefox
+            # TODO: Support for default browser? idk
+            elif 'open firefox' in query:
+                speak("opening firefox ")
+                codePathf = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
+                os.startfile(codePathf)
 
-        elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize window' in \
-                query:
-            speak("sure.")
-            hwnd = win32gui.GetForegroundWindow()
-            win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
+            elif 'hide window' in query or 'hide work' in query or 'change window' in query or 'minimise window' in query:
+                # close in window
+                speak("ok.")
+                Minimize = win32gui.GetForegroundWindow()
+                win32gui.ShowWindow(Minimize, win32con.SW_MINIMIZE)
 
-        # Locks the screen, essentially like pressing "Win + L"
-        # <>Pretty proud of this one, ngl. -snolte26</>
-        elif 'lockdown' in query or 'lock everything down' in query or 'lock down' in query:
-            speak("Locking things down...")
-            ctypes.windll.user32.LockWorkStation()
-            speak("Locked down, I'll be waiting")
+            elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize window' in \
+                    query:
+                speak("sure.")
+                hwnd = win32gui.GetForegroundWindow()
+                win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
 
-        elif 'screenshot' in query or 'screen shot' in query:
-            speak("Screenshot, coming up...")
-            pyautogui.hotkey('win', 'shift', 's')
+            # Locks the screen, essentially like pressing "Win + L"
+            # <>Pretty proud of this one, ngl. -snolte26</>
+            elif 'lockdown' in query or 'lock everything down' in query or 'lock down' in query:
+                speak("Locking things down...")
+                ctypes.windll.user32.LockWorkStation()
+                speak("Locked down, I'll be waiting")
 
-        elif 'who are you' in query or 'about you' in query or "your details" in query:
-            speak("i am JARVIS, your work partner. I'm all ear's")
+            elif 'screenshot' in query or 'screen shot' in query:
+                speak("Screenshot, coming up...")
+                pyautogui.hotkey('win', 'shift', 's')
 
-        elif 'how are you' in query:
-            speak("I am doing alright. How can i help you?")
+            elif 'who are you' in query or 'about you' in query or "your details" in query:
+                speak("i am JARVIS, your work partner. I'm all ear's")
 
-        elif 'exit' in query or 'goodbye' in query or 'good bye' in query or 'bye' in query:
-            speak("thank you, see you later")
-            quit()
+            elif 'how are you' in query:
+                speak("I am doing alright. How can i help you?")
 
-        elif 'thank you' in query or 'thanks' in query:
-            speak("No problem sir.")
+            elif 'exit' in query or 'goodbye' in query or 'good bye' in query or 'bye' in query:
+                speak("thank you, see you later")
+                quit()
 
-        elif "hello" in query or "hello Jarvis" in query:
-            hel = "Hello  Sir ! How May i Help you.."
-            print(hel)
-            speak(hel)
+            elif 'thank you' in query or 'thanks' in query:
+                speak("No problem sir.")
 
-        # Clears the console window. That thing can get full quick from all the listening it does and probably not
-        # getting any useful inputs
-        elif 'clean' in query:
-            speak("ok.")
+            elif "hello" in query or "hello Jarvis" in query:
+                hel = "Hello  Sir ! How May i Help you.."
+                print(hel)
+                speak(hel)
 
-            def clear():
-                return os.system('cls')
+            # Clears the console window. That thing can get full quick from all the listening it does and probably not
+            # getting any useful inputs
+            elif 'clean' in query:
+                speak("ok.")
 
-            clear()
+                def clear():
+                    return os.system('cls')
 
-        # This was just for goofs, its from an Eric Andre bit. https://www.youtube.com/watch?v=CDUlz-S11Cw
-        elif "show me this guy's balls please" in query:
-            speak("ok, here is this guys balls")
-            webbrowser.open_new(
-                'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
+                clear()
 
-        elif 'what can you do' in query:
-            speak("I can give you the time, give info from wikipedia, give you the weather, play music, lock things "
-                  "down, open certain pages, take screenshots, and other small tasks. I try to help you where I can")
+            # This was just for goofs, its from an Eric Andre bit. https://www.youtube.com/watch?v=CDUlz-S11Cw
+            elif "show me this guy's balls please" in query:
+                speak("ok, here is this guys balls")
+                webbrowser.open_new(
+                    'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
+
+            elif 'what can you do' in query:
+                speak("I can give you the time, give info from wikipedia, give you the weather, play music, lock things "
+                      "down, open certain pages, take screenshots, and other small tasks. I try to help you where I can")
 
 
 if __name__ == '__main__':

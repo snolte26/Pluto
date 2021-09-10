@@ -36,15 +36,15 @@ def set_new_weather_key():
 
     # If the file exists and is not empty, append onto a new line
     if os.stat('./.env').st_size == 0:
-        print('.env is empty!')
         env_file = open('.env', 'w')
         env_file.write(f'OWM_KEY={weather_key}')
     else:
-        print('.env is not empty!')
         env_file = open('.env', 'a')
         env_file.write(f'\nOWM_KEY={weather_key}')
 
     env_file.close()
+
+    load_dotenv()
 
     if os.getenv('OWM_KEY'):
         print('Key has been set to environment!')

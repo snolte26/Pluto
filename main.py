@@ -1,20 +1,21 @@
 import ctypes
-import sys
-import pyttsx3
-import speech_recognition as sr
 import datetime
-import wikipedia
-import webbrowser
 import os
-from dotenv import load_dotenv
 import random
-import requests
-import pyautogui
+import sys
+import time
 import types
+import webbrowser
+import pyautogui
+import pyttsx3
+import requests
+import speech_recognition as sr
+import wikipedia
+from dotenv import load_dotenv
+from threading import Timer
 
 # Importing config.py for environment variable setup
 import config
-
 
 is_windows = sys.platform.startswith('win32')
 
@@ -50,7 +51,7 @@ speech = types.SimpleNamespace()
 def init_speech_engine_windows():
     speech.engine = pyttsx3.init('sapi5')
     voices = speech.engine.getProperty('voices')
-    speech.engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. I went with female. -snolte26
+    speech.engine.setProperty('voice', voices[0].id)  # 0 is male, 1 is female. -snolte26
     speech.engine.setProperty('rate', 155)
 
 
@@ -75,6 +76,19 @@ def wishMe():
         speak("Good Evening")
 
     speak("I am JARVIS, how may I help you?")
+
+
+def timer(alarmTime):
+
+    time.sleep(alarmTime)
+    for i in range(3):
+        if is_windows:
+            frequency = 2600
+            duration = 500  # duration is in milliseconds, 250 ms = .25 seconds
+            winsound.Beep(frequency, duration)
+        else:
+            print('\a')
+        time.sleep(.15)
 
 
 # Weather function
@@ -155,14 +169,38 @@ def main():
         init_speech_engine_linux()
 
     wishMe()
+
+    # TODO: Feel free to add more responses to this list here
+    responses = ["ok", "alright", "sounds good", "hows this", "here you go"]
     while True:
         wakeUp = takeCommands(False).lower()
         if WAKE in wakeUp:
 
-    # while True:
             query = takeCommands(True).lower()
 
             # Begin looking at what user has said
+
+            if ("timer" or "alarm") in query:
+                speak("How many hours")
+                hours = int(takeCommands(True).lower())
+                speak("How many minutes")
+                minutes = int(takeCommands(True).lower())
+                speak("How many seconds")
+                seconds = int(takeCommands(True).lower())
+
+                if hours > 0:
+                    hour = hours * 3600
+                else:
+                    hour = 0
+                if minutes > 0:
+                    minute = minutes * 60
+                else:
+                    minute = 0
+                AlarmTime = hour + minute + seconds
+                speak("Ok, set an alarm for " + str(hours) + " hours, " + str(minutes) + " minutes, " + str(seconds) + " seconds from now")
+
+                timerFunc = Timer(0.0, timer, [AlarmTime])
+                timerFunc.start()
 
             if 'wikipedia' in query:
                 speak('Searching Wikipedia...')
@@ -185,7 +223,7 @@ def main():
                 weather(zip)
 
             # Basically another wikipedia call, but is like asking a question
-            elif 'who is' in query or 'how to' in query or 'what is' in query:
+            elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in query or "what are" in query:
                 speak('Searching Wikipedia...')
                 resultsw = wikipedia.summary(query, sentences=2)
                 speak("Sir, " + resultsw)
@@ -202,7 +240,7 @@ def main():
                 # music_dir = ""  # add your music dir
                 songs = os.listdir(musicDir)
                 chosenSong = random.randint(1, len(songs))
-                speak('ok sir. playing ' + songs[chosenSong - 1])
+                speak(random.choice(responses))
 
                 slash = "\\"
                 if not is_windows:
@@ -218,19 +256,19 @@ def main():
             # Opens Firefox, really only works if you have firefox
             # TODO: Support for default browser? idk
             elif 'open firefox' in query:
-                speak("opening firefox ")
+                speak(random.choice(responses))
                 codePathf = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
                 os.startfile(codePathf)
 
             elif 'hide window' in query or 'hide work' in query or 'change window' in query or 'minimise window' in query:
                 # close in window
-                speak("ok.")
+                speak(random.choice(responses))
                 Minimize = win32gui.GetForegroundWindow()
                 win32gui.ShowWindow(Minimize, win32con.SW_MINIMIZE)
 
             elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize window' in \
                     query:
-                speak("sure.")
+                speak(random.choice(responses))
                 hwnd = win32gui.GetForegroundWindow()
                 win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
 
@@ -266,7 +304,7 @@ def main():
             # Clears the console window. That thing can get full quick from all the listening it does and probably not
             # getting any useful inputs
             elif 'clean' in query:
-                speak("ok.")
+                speak(random.choice(responses))
 
                 def clear():
                     return os.system('cls')

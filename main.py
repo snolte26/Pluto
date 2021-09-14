@@ -11,6 +11,7 @@ import pyttsx3
 import requests
 import speech_recognition as sr
 import wikipedia
+import wolframalpha
 from dotenv import load_dotenv
 from threading import Timer
 
@@ -20,6 +21,7 @@ import config
 is_windows = sys.platform.startswith('win32')
 
 # TODO: Add Linux support <3
+# is this ^ "to do" done? can i get rid of it? -snolte26
 # Checks to see if you are running windows, then imports some more modules,
 # or throws a fit if you are not, for now
 if is_windows:
@@ -35,7 +37,7 @@ else:
 load_dotenv()
 
 # Set up environment if needed
-if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH'):
+if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH') or not os.getenv('WOLF_ALPH_KEY'):
     config.initialize()
 
 
@@ -202,13 +204,6 @@ def main():
                 timerFunc = Timer(0.0, timer, [AlarmTime])
                 timerFunc.start()
 
-            if 'wikipedia' in query:
-                speak('Searching Wikipedia...')
-                query = query.replace("wikipedia", "")
-                results = wikipedia.summary(query, sentences=2)
-                speak("Sir, " + results)
-                print(results)
-
             elif 'open youtube' in query:
                 webbrowser.open_new("youtube.com")
             elif 'open stackoverflow' in query:
@@ -224,11 +219,26 @@ def main():
 
             # Basically another wikipedia call, but is like asking a question
             elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in query or "what are" in query:
-                speak('Searching Wikipedia...')
-                resultsw = wikipedia.summary(query, sentences=2)
-                speak("Sir, " + resultsw)
-                speak("That's it")
-                print(resultsw)
+                if not os.getenv('WOLF_ALPH_KEY'):
+                    config.init_env()
+                searchResponses = ["Gimme a sec", "Let me look for that", "good question, lets see...", "lets see..."]
+                speak(random.choice(searchResponses))
+                try:
+                    appID = os.getenv('WOLF_ALPH_KEY')
+                    client = wolframalpha.Client(appID)
+                    res = client.query(query)
+                    answer = next(res.results).text
+                    speak("Alright, here's what i found")
+                    speak(answer)
+                except Exception:
+                    speak("Hmmm, couldn't find it there. lets try Wikipedia...")
+                    resultsw = wikipedia.summary(query, sentences=2)
+                    speak("Alright, " + resultsw)
+                    speak("That's it")
+                    print(resultsw)
+                except:
+                    speak("Damn. Sorry, I couldn't find what you were looking for.")
+                    pass
 
             # Playing music
             elif 'play music' in query or 'play some music' in query:

@@ -236,7 +236,7 @@ def main():
                     speak("Alright, " + resultsw)
                     speak("That's it")
                     print(resultsw)
-                except:
+                except wikipedia.PageError:
                     speak("Damn. Sorry, I couldn't find what you were looking for.")
                     pass
 

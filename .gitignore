@@ -5,6 +5,9 @@
 # Environment variables should be ignored
 .env
 
+# Events file should be ignored
+events.json
+
 # Python virtual environment folders
 .venv
 venv/

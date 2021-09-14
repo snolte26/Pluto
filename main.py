@@ -1,5 +1,6 @@
 import ctypes
 import datetime
+import json
 import os
 import random
 import sys
@@ -210,6 +211,44 @@ def main():
                 webbrowser.open_new("stackoverflow.com")
             elif 'open github' in query:
                 webbrowser.open_new("github.com")
+
+            elif 'add event' in query:
+                speak("Whats the name?")
+                name = takeCommands(True).lower()
+                speak("What year?")
+                year = int(takeCommands(True).lower())
+                speak("What month?")
+                month = takeCommands(True).lower()
+                speak("What day?")
+                day = int(takeCommands(True).lower())
+                speak("What time?")
+                eventTime = takeCommands(True).lower()
+
+                try:
+                    events = json.load(open('events.json'))
+                    if type(events) is dict:
+                        events = [events]
+                    events.append({
+                        "name": name,
+                        "year": year,
+                        "month": month,
+                        "day": day,
+                        "time": eventTime
+                    })
+                    with open('events.json', 'w') as outfile:
+                        json.dump(events, outfile)
+                    speak("OK, event created")
+                except FileNotFoundError:
+                    events = [{
+                        "name": name,
+                        "year": year,
+                        "month": month,
+                        "day": day,
+                        "time": eventTime
+                    }]
+                    with open('events.json', 'w') as outfile:
+                        json.dump(events, outfile)
+                    speak("OK, event created")
 
             # If the user wants to know the weather
             elif 'weather' in query or 'temperature' in query:

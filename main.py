@@ -15,11 +15,21 @@ import wikipedia
 import wolframalpha
 from dotenv import load_dotenv
 from threading import Timer
+import asyncio
 
 # Importing config.py for environment variable setup
 import config
 
 is_windows = sys.platform.startswith('win32')
+
+# Initialize recognizer outside function body so that its state changes,
+# and also so that it only runs once. 
+r = sr.Recognizer()
+
+# Collect ambient noise (runs only once) and save it to the recognizer instance for later
+with sr.Microphone() as source:
+    print('\nA moment of silence please.\nAdjusting for ambient noise...')
+    r.adjust_for_ambient_noise(source, 3)
 
 # TODO: Add Linux support <3
 # is this ^ "to do" done? can i get rid of it? -snolte26
@@ -30,7 +40,9 @@ if is_windows:
     import win32con
     import winsound
 else:
-    print('\nThe ' + sys.platform + ' platform is not fully supported yet. Some features may work -- no guarantees.')
+    import beepy
+
+    print('\nThe ' + sys.platform + ' platform is not fully supported yet. :(\nSome features may work, but no guarantees.')
     print('Continuing...')
 
 # Looks for a .env file and loads it.
@@ -90,7 +102,7 @@ def timer(alarmTime):
             duration = 500  # duration is in milliseconds, 250 ms = .25 seconds
             winsound.Beep(frequency, duration)
         else:
-            print('\a')
+            beepy.beep(4)
         time.sleep(.15)
 
 
@@ -132,14 +144,9 @@ def weather(zip):
         print("no data today")
         speak("Sorry, I cant find any weather data right now")
 
-
 # Listening to the command
 def takeCommands(beep):
-    r = sr.Recognizer()
-
     with sr.Microphone() as source:
-        # print("Adjusting for ambient noise...\n")
-        # r.adjust_for_ambient_noise(source)
         print("Listening...")
         r.pause_threshold = 1
         if beep:
@@ -148,7 +155,8 @@ def takeCommands(beep):
                 duration = 250  # duration is in milliseconds, 250 ms = .25 seconds
                 winsound.Beep(frequency, duration)
             else:
-                print('\a')
+                beepy.beep(1)
+
             audio = r.listen(source)
         else:
             audio = r.listen(source)
@@ -306,8 +314,12 @@ def main():
             # TODO: Support for default browser? idk
             elif 'open firefox' in query:
                 speak(random.choice(responses))
-                codePathf = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
-                os.startfile(codePathf)
+                if is_windows:
+                    codePathf = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
+                    os.startfile(codePathf)
+                else:
+                    import webbrowser
+                    webbrowser.get('firefox').open_new('about:blank')
 
             elif 'hide window' in query or 'hide work' in query or 'change window' in query or 'minimise window' in query:
                 # close in window

@@ -24,6 +24,9 @@ def initialize():
     if not os.getenv('MUSIC_PATH'):
         set_new_music_path()
 
+    if not os.getenv('WOLF_ALPH_KEY'):
+        set_new_wolf_alph_key()
+
 
 def set_new_weather_key():
     weather_key = input('\nEnter or paste Open Weather Map API key here: ')
@@ -36,15 +39,15 @@ def set_new_weather_key():
 
     # If the file exists and is not empty, append onto a new line
     if os.stat('./.env').st_size == 0:
-        print('.env is empty!')
         env_file = open('.env', 'w')
         env_file.write(f'OWM_KEY={weather_key}')
     else:
-        print('.env is not empty!')
         env_file = open('.env', 'a')
         env_file.write(f'\nOWM_KEY={weather_key}')
 
     env_file.close()
+
+    load_dotenv()
 
     if os.getenv('OWM_KEY'):
         print('Key has been set to environment!')
@@ -86,3 +89,32 @@ def set_new_music_path():
         print('Path has been set to environment!')
     else:
         print('Something went wrong setting Music Path to the environment.')
+
+
+def set_new_wolf_alph_key():
+    wolf_alph_key = input('\nEnter or paste Wolfram Alpha API key here: ')
+
+    # Recursion here, in case the user doesn't enter any value
+    if not wolf_alph_key:
+        set_new_weather_key()
+
+    print('Setting Wolfram Alpha API key...')
+
+    # If the file exists and is not empty, append onto a new line
+    if os.stat('./.env').st_size == 0:
+        env_file = open('.env', 'w')
+        env_file.write(f'WOLF_ALPH_KEY={wolf_alph_key}')
+    else:
+        env_file = open('.env', 'a')
+        env_file.write(f'\nWOLF_ALPH_KEY={wolf_alph_key}')
+
+    env_file.close()
+
+    load_dotenv()
+
+    if os.getenv('wolf_alph_key'):
+        print('Key has been set to environment!')
+    else:
+        print('Something went wrong setting OWM key to the environment.')
+    pass
+

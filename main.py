@@ -94,6 +94,60 @@ def timer(alarmTime):
         time.sleep(.15)
 
 
+def daysEvents():
+    speak("Let me check my calendar...")
+    try:
+        months = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                       "October", "November", "December"]
+        today = datetime.datetime.now()
+        events = json.load(open('events.json'))
+        for i in range(len(events)):
+            if events[i]["year"] == int(today.strftime("%Y")) and events[i]["month"] == today.strftime("%B") and events[i]["day"] < int(today.strftime("%d")):
+                del events[i]
+        for i in range(len(events)):
+            if events[i]["year"] < int(today.strftime("%Y")):
+                del events[i]
+        for i in range(len(events)):
+            if events[i]["year"] == int(today.strftime("%Y")):
+                for Month in range(0, len(months)):
+                    if today.strftime("%B") == months[Month]:
+                        if months[Month-1] == events[i]["month"]:
+                            del events[i]
+                        else:
+                            break
+
+
+        with open('events.json', 'w') as outfile:
+            json.dump(events, outfile)
+        events = json.load(open('events.json'))
+        listLen = len(events)
+        futureEvents = 0
+        if listLen > 0:
+
+            for event in events:
+                if event["year"] == int(today.strftime("%Y")):
+                    if event["month"] == today.strftime("%B"):
+                        if event["day"] == int(today.strftime("%d")):
+                            print(event["name"])
+                            speak("you have an event at " + str(event["time"]) + ", " + str(event["name"]))
+                        else:
+                            futureEvents += 1
+                    else:
+                        futureEvents += 1
+                else:
+                    futureEvents += 1
+
+        else:
+            if futureEvents == listLen and listLen > 0:
+                speak("Sorry, nothing coming up today")
+            else:
+                speak("Sorry, my calendar is empty")
+
+    except FileNotFoundError:
+        speak("Sorry, but I have no calendar file. Try adding an event")
+    pass
+
+
 # Weather function
 def weather(zip):
     base = "https://api.openweathermap.org/data/2.5/weather?"
@@ -212,13 +266,14 @@ def main():
             elif 'open github' in query:
                 webbrowser.open_new("github.com")
 
-            elif 'add event' in query:
+            elif 'add event' in query or "add an event" in query or "add a reminder" in query or "add reminder" in \
+                    query:
                 speak("Whats the name?")
                 name = takeCommands(True).lower()
                 speak("What year?")
                 year = int(takeCommands(True).lower())
                 speak("What month?")
-                month = takeCommands(True).lower()
+                month = takeCommands(True)
                 speak("What day?")
                 day = int(takeCommands(True).lower())
                 speak("What time?")
@@ -249,6 +304,9 @@ def main():
                     with open('events.json', 'w') as outfile:
                         json.dump(events, outfile)
                     speak("OK, event created")
+
+            elif 'reminders' in query or "calendar" in query or "events" in query:
+                daysEvents()
 
             # If the user wants to know the weather
             elif 'weather' in query or 'temperature' in query:

@@ -106,7 +106,7 @@ def weather(zip):
     '''
     # Setup OWM_KEY in the .env if there is none
     if not os.getenv('OWM_KEY'):
-        config.init_env()
+        config.initialize()
 
     apiKey = os.getenv('OWM_KEY')
 
@@ -259,7 +259,7 @@ def main():
             # Basically another wikipedia call, but is like asking a question
             elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in query or "what are" in query:
                 if not os.getenv('WOLF_ALPH_KEY'):
-                    config.init_env()
+                    config.initialize()
                 searchResponses = ["Gimme a sec", "Let me look for that", "good question, lets see...", "lets see..."]
                 speak(random.choice(searchResponses))
                 try:

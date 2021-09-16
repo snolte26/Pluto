@@ -27,6 +27,9 @@ def initialize():
     if not os.getenv('WOLF_ALPH_KEY'):
         set_new_wolf_alph_key()
 
+    if not os.getenv('ZIP_CODE'):
+        set_zip_code()
+
 
 def set_new_weather_key():
     weather_key = input('\nEnter or paste Open Weather Map API key here: ')
@@ -96,7 +99,7 @@ def set_new_wolf_alph_key():
 
     # Recursion here, in case the user doesn't enter any value
     if not wolf_alph_key:
-        set_new_weather_key()
+        set_new_wolf_alph_key()
 
     print('Setting Wolfram Alpha API key...')
 
@@ -118,3 +121,30 @@ def set_new_wolf_alph_key():
         print('Something went wrong setting OWM key to the environment.')
     pass
 
+
+def set_zip_code():
+    zipCode = input('\nEnter or paste Wolfram Alpha API key here: ')
+
+    # Recursion here, in case the user doesn't enter any value
+    if not zipCode:
+        set_zip_code()
+
+    print('Setting zip code...')
+
+    # If the file exists and is not empty, append onto a new line
+    if os.stat('./.env').st_size == 0:
+        env_file = open('.env', 'w')
+        env_file.write(f'ZIP_CODE={zipCode}')
+    else:
+        env_file = open('.env', 'a')
+        env_file.write(f'\nZIP_CODE={zipCode}')
+
+    env_file.close()
+
+    load_dotenv()
+
+    if os.getenv('ZIP_CODE'):
+        print('Key has been set to environment!')
+    else:
+        print('Something went wrong setting OWM key to the environment.')
+    pass

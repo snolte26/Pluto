@@ -6,7 +6,6 @@ import random
 import sys
 import time
 import types
-import webbrowser
 import pyautogui
 import pyttsx3
 import requests
@@ -15,10 +14,15 @@ import wikipedia
 import wolframalpha
 from dotenv import load_dotenv
 from threading import Timer
-import asyncio
 
 # Importing config.py for environment variable setup
 import config
+
+# Unused Imports
+'''
+import asyncio
+import webbrowser
+'''
 
 is_windows = sys.platform.startswith('win32')
 
@@ -81,7 +85,7 @@ def speak(audio):
     speech.engine.runAndWait()
 
 
-def wishMe():
+def wishMe(name):
     hour = int(datetime.datetime.now().hour)
     if 0 <= hour <= 11:
         speak("Good Morning!")
@@ -90,7 +94,7 @@ def wishMe():
     else:
         speak("Good Evening")
 
-    speak("I am JARVIS, how may I help you?")
+    speak("I am" + name + ", how may I help you?")
 
 
 def timer(alarmTime):
@@ -164,12 +168,6 @@ def daysEvents():
 def weather(zip):
     base = "https://api.openweathermap.org/data/2.5/weather?"
 
-    # TODO: add zipcode to environment variable - preferably automated in config.py if it doesn't exist
-    # For now, you can edit this zip code variable instead
-    '''
-    if os.getenv('OWM_ZIP'):
-        zipcode = os.getenv('OWM_ZIP')
-    '''
     # Setup OWM_KEY in the .env if there is none
     if not os.getenv('OWM_KEY'):
         config.initialize()
@@ -227,13 +225,15 @@ def takeCommands(beep):
 
 # Main function
 def main():
+    names = ["PyJarvis", "Jarvis", "HAL 9000", "Mantis Toboggan"]
+    name = random.choice(names)
     WAKE = "jarvis"
     if is_windows:
         init_speech_engine_windows()
     else:
         init_speech_engine_linux()
 
-    wishMe()
+    wishMe(name)
 
     # TODO: Feel free to add more responses to this list here
     responses = ["ok", "alright", "sounds good", "hows this", "here you go"]
@@ -318,9 +318,14 @@ def main():
 
             # If the user wants to know the weather
             elif 'weather' in query or 'temperature' in query:
-                speak("For what zipcode would you like the weather?")
-                zip = takeCommands(True)
-                weather(zip)
+                if os.getenv('OWM_ZIP'):
+                    zipcode = os.getenv('ZIP_CODE')
+                    weather(zipcode)
+                else:
+                    speak("For what zipcode would you like the weather?")
+                    zipcode = takeCommands(True)
+                    weather(zipcode)
+                    speak("By the way, we can set up a default zip code, if you want")
 
             # Basically another wikipedia call, but is like asking a question
             elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in query or "what are" in query:
@@ -403,7 +408,8 @@ def main():
                 pyautogui.hotkey('win', 'shift', 's')
 
             elif 'who are you' in query or 'about you' in query or "your details" in query:
-                speak("i am JARVIS, your work partner. I'm all ear's")
+                name = random.choice(names)
+                speak("i am" + name + ", your work partner. I'm all ear's")
 
             elif 'how are you' in query:
                 speak("I am doing alright. How can i help you?")
@@ -437,8 +443,8 @@ def main():
                     'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
 
             elif 'what can you do' in query:
-                speak("I can give you the time, give info from wikipedia, give you the weather, play music, lock things "
-                      "down, open certain pages, take screenshots, and other small tasks. I try to help you where I can")
+                speak("I can set timers, create calender events, give you todays events, search the web, play music, "
+                      "and other small tasks. More to come later")
 
 
 if __name__ == '__main__':

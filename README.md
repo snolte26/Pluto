@@ -30,4 +30,6 @@ If you dont have a Wolfram Alpha API key yet:
 If you don't have this environment variable set, the script will ask for one
 on the command line and do all of this for you.
 
+Beepy relies on simpleaudio. Simpleaudio relies on Microsoft Visual C++ 14.0 or greater if on windows. You can download Microsoft Visual C++ [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+
 ----------------------------------

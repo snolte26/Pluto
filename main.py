@@ -225,6 +225,7 @@ def takeCommands(beep):
 
 # Main function
 def main():
+    # TODO: Please feel free to add more stupid names or variations of JARVIS to this list
     names = ["PyJarvis", "Jarvis", "HAL 9000", "Mantis Toboggan"]
     name = random.choice(names)
     WAKE = "jarvis"

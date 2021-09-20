@@ -1,5 +1,5 @@
 # PyJARVIS
-a python voice assistant
+A Python voice assistant
 
 ----------------------------------
 

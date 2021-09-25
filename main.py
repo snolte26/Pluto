@@ -1,6 +1,7 @@
 import ctypes
 import datetime
 import json
+import math
 import os
 import random
 import sys
@@ -182,13 +183,16 @@ def weather(zip):
         Main = data['main']
         tmpma = Main['temp']
         humidity = Main['humidity']
-        temperature = int((((tmpma - 273.15) * 9) / 5) + 32)
+        temperature = math.floor(int((((tmpma - 273.15) * 9) / 5) + 32))
+        print(temperature)
         tmpmax = Main['temp_max']
         tmpmin = Main['temp_min']
         tempMax = int((((tmpmax - 273.15) * 9) / 5) + 32)
         tempMin = int((((tmpmin - 273.15) * 9) / 5) + 32)
         report = data['weather']
         speak(f"Sir, the current temperature is {temperature} Degrees Fahrenheit")
+        if temperature == 69:
+            speak("Nice")
         speak(f"and {report[0]['description']}")
         speak(f"The humidity is currently {humidity}%")
         speak(f"The high for today is {tempMax} degrees and a low of {tempMin} degrees")
@@ -319,7 +323,7 @@ def main():
 
             # If the user wants to know the weather
             elif 'weather' in query or 'temperature' in query:
-                if os.getenv('OWM_ZIP'):
+                if os.getenv('ZIP_CODE'):
                     zipcode = os.getenv('ZIP_CODE')
                     weather(zipcode)
                 else:

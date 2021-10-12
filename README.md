@@ -40,6 +40,11 @@ Here are some of the features and commands you can use to interact with PyJARVIS
 ### Wake Word
 To wake up PyJARVIS to take commands, say `Jarvis` and you will hear a beep when JARVIS is ready for your commands. If JARVIS needs some other input in order to carry out a function, such as a zip code for the weather, you will hear a beep when it is ready for your input 
 
+### Start of Day
+An option you can set up is a time to run Start-of-Day, a few functions that will run at the same time every day. These functions include giving the weather for the day, going over calendar events/reminders, then play music if you would like. 
+
+Alternatively, you can run Start-of-Day manually by saying something like `Run start of day`
+
 ### Timers/Alarms
 Here you can have PyJARVIS set a timer that runs in the background. It will ask for the duration of the alarm and then run the timer in the background. 
 

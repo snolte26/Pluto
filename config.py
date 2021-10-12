@@ -30,6 +30,9 @@ def initialize():
     if not os.getenv('ZIP_CODE'):
         set_zip_code()
 
+    if not os.getenv('SoD_TIME'):
+        set_SoD_TIME()
+
 
 def set_new_weather_key():
     weather_key = input('\nEnter or paste Open Weather Map API key here: ')
@@ -118,12 +121,12 @@ def set_new_wolf_alph_key():
     if os.getenv('wolf_alph_key'):
         print('Key has been set to environment!')
     else:
-        print('Something went wrong setting OWM key to the environment.')
+        print('Something went wrong setting Wolfram Alpha key to the environment.')
     pass
 
 
 def set_zip_code():
-    zipCode = input('\nEnter or paste Wolfram Alpha API key here: ')
+    zipCode = input('\nEnter or paste ZIP Code here: ')
 
     # Recursion here, in case the user doesn't enter any value
     if not zipCode:
@@ -146,5 +149,33 @@ def set_zip_code():
     if os.getenv('ZIP_CODE'):
         print('Key has been set to environment!')
     else:
-        print('Something went wrong setting OWM key to the environment.')
+        print('Something went wrong setting Zip Code to the environment.')
+    pass
+
+
+def set_SoD_TIME():
+    SoD_TIME = input('\nEnter or paste Start of Day Time here (24 hr i.e. 13:30): ')
+
+    # Recursion here, in case the user doesn't enter any value
+    if not SoD_TIME:
+        set_SoD_TIME()
+
+    print('Setting SoD_TIME...')
+
+    # If the file exists and is not empty, append onto a new line
+    if os.stat('./.env').st_size == 0:
+        env_file = open('.env', 'w')
+        env_file.write(f'SoD_TIME={SoD_TIME}')
+    else:
+        env_file = open('.env', 'a')
+        env_file.write(f'\nSoD_TIME={SoD_TIME}')
+
+    env_file.close()
+
+    load_dotenv()
+
+    if os.getenv('SoD_TIME'):
+        print('Key has been set to environment!')
+    else:
+        print('Something went wrong setting SoD_TIME to the environment.')
     pass

@@ -200,6 +200,25 @@ def weather(zip):
         print("no data today")
         speak("Sorry, I cant find any weather data right now")
 
+def playMusic():
+    responses = ["ok", "alright", "sounds good", "hows this", "here you go"]
+    if not os.getenv('MUSIC_PATH'):
+        config.initialize()
+
+    musicDir = os.getenv('MUSIC_PATH')
+
+    # music_dir = ""  # add your music dir
+    songs = os.listdir(musicDir)
+    chosenSong = random.randint(1, len(songs))
+    speak(random.choice(responses))
+
+    slash = "\\"
+    if not is_windows:
+        slash = "/"
+
+    os.system(musicDir + slash + songs[chosenSong - 1])
+    # os.system(os.path.join(music_dir, songs[1]))
+
 # Listening to the command
 def takeCommands(beep):
     with sr.Microphone() as source:
@@ -243,6 +262,19 @@ def main():
     # TODO: Feel free to add more responses to this list here
     responses = ["ok", "alright", "sounds good", "hows this", "here you go"]
     while True:
+        # Check for start of day time
+        currentDT = datetime.datetime.now()
+        if currentDT.strftime("%H:%M") == os.getenv('SoD_TIME'):
+            weatherZip = os.getenv('ZIP_CODE')
+            weather(weatherZip)
+            daysEvents()
+            musicQuestions = ["Care for some music?", "Should I play some music?", "Shall I play some music?"]
+            speak(random.choice(musicQuestions))
+            choice = takeCommands(True).lower()
+            if "yes" in choice or "sure" in choice:
+                playMusic()
+
+        # Normal queries
         wakeUp = takeCommands(False).lower()
         if WAKE in wakeUp:
 
@@ -332,6 +364,19 @@ def main():
                     weather(zipcode)
                     speak("By the way, we can set up a default zip code, if you want")
 
+            elif 'start of day' in query:
+                if not os.getenv('SoD_TIME'):
+                    speak("Lets set up a time to run every day, first")
+                    config.initialize()
+                weatherZip = os.getenv('ZIP_CODE')
+                weather(weatherZip)
+                daysEvents()
+                musicQuestions = ["Care for some music?", "Should I play some music?", "Shall I play some music?"]
+                speak(random.choice(musicQuestions))
+                choice = takeCommands(True).lower()
+                if "yes" in choice or "sure" in choice:
+                    playMusic()
+
             # Basically another wikipedia call, but is like asking a question
             elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in query or "what are" in query:
                 if not os.getenv('WOLF_ALPH_KEY'):
@@ -357,22 +402,8 @@ def main():
 
             # Playing music
             elif 'play music' in query or 'play some music' in query:
-                if not os.getenv('MUSIC_PATH'):
-                    config.initialize()
+                playMusic()
 
-                musicDir = os.getenv('MUSIC_PATH')
-
-                # music_dir = ""  # add your music dir
-                songs = os.listdir(musicDir)
-                chosenSong = random.randint(1, len(songs))
-                speak(random.choice(responses))
-
-                slash = "\\"
-                if not is_windows:
-                    slash = "/"
-
-                os.system(musicDir + slash + songs[chosenSong - 1])
-                # os.system(os.path.join(music_dir, songs[1]))
 
             elif 'the time' in query or 'what is time' in query:
                 strTime = datetime.datetime.now().strftime("%H:%M:%S")
@@ -450,6 +481,8 @@ def main():
             elif 'what can you do' in query:
                 speak("I can set timers, create calender events, give you todays events, search the web, play music, "
                       "and other small tasks. More to come later")
+
+
 
 
 if __name__ == '__main__':

@@ -13,3 +13,5 @@ events.json
 venv/
 
 __pycache__/
+
+Music/

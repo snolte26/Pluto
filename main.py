@@ -249,9 +249,9 @@ def takeCommands(beep):
 # Main function
 def main():
     # TODO: Please feel free to add more stupid names or variations of JARVIS to this list
-    names = ["PyJarvis", "Jarvis", "HAL 9000", "Mantis Toboggan"]
+    names = ["PyJarvis", "Jarvis", "HAL 9000", "Mantis Toboggan", "Pluto"]
     name = random.choice(names)
-    WAKE = "jarvis"
+    WAKE = "pluto"
     if is_windows:
         init_speech_engine_windows()
     else:

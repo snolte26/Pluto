@@ -47,7 +47,9 @@ if is_windows:
 else:
     import beepy
 
-    print('\nThe ' + sys.platform + ' platform is not fully supported yet. :(\nSome features may work, but no guarantees.')
+    print(
+        '\nThe ' + sys.platform + ' platform is not fully supported yet. :(\nSome features may work, '
+                                  'but no guarantees.')
     print('Continuing...')
 
 # Looks for a .env file and loads it.
@@ -55,9 +57,9 @@ else:
 load_dotenv()
 
 # Set up environment if needed
-if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH') or not os.getenv('WOLF_ALPH_KEY'):
+if not os.path.exists('./.env') or not os.getenv('OWM_KEY') or not os.getenv('MUSIC_PATH') or not os.getenv(
+        'WOLF_ALPH_KEY'):
     config.initialize()
-
 
 '''
 This top-level empty object will hold the speech engine to be used. This starts out as empty, then gets populated
@@ -99,7 +101,6 @@ def wishMe(name):
 
 
 def timer(alarmTime):
-
     time.sleep(alarmTime)
     for i in range(3):
         if is_windows:
@@ -115,11 +116,12 @@ def daysEvents():
     speak("Let me check my calendar...")
     try:
         months = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
-                       "October", "November", "December"]
+                  "October", "November", "December"]
         today = datetime.datetime.now()
         events = json.load(open('events.json'))
         for i in range(len(events)):
-            if events[i]["year"] == int(today.strftime("%Y")) and events[i]["month"] == today.strftime("%B") and events[i]["day"] < int(today.strftime("%d")):
+            if events[i]["year"] == int(today.strftime("%Y")) and events[i]["month"] == today.strftime("%B") and \
+                    events[i]["day"] < int(today.strftime("%d")):
                 del events[i]
         for i in range(len(events)):
             if events[i]["year"] < int(today.strftime("%Y")):
@@ -128,11 +130,10 @@ def daysEvents():
             if events[i]["year"] == int(today.strftime("%Y")):
                 for Month in range(0, len(months)):
                     if today.strftime("%B") == months[Month]:
-                        if months[Month-1] == events[i]["month"]:
+                        if months[Month - 1] == events[i]["month"]:
                             del events[i]
                         else:
                             break
-
 
         with open('events.json', 'w') as outfile:
             json.dump(events, outfile)
@@ -200,6 +201,7 @@ def weather(zip):
         print("no data today")
         speak("Sorry, I cant find any weather data right now")
 
+
 def playMusic():
     responses = ["ok", "alright", "sounds good", "hows this", "here you go"]
     if not os.getenv('MUSIC_PATH'):
@@ -219,6 +221,7 @@ def playMusic():
     os.system(musicDir + slash + songs[chosenSong - 1])
     # os.system(os.path.join(music_dir, songs[1]))
 
+
 # Listening to the command
 def takeCommands(beep):
     with sr.Microphone() as source:
@@ -232,9 +235,12 @@ def takeCommands(beep):
             else:
                 beepy.beep(1)
 
-            audio = r.listen(source)
+            # audio = r.listen(source)
+            # I wonder if doing this will help Jarvis actually listen instead of getting stuck after x times
+            audio = r.listen(source, timeout=5, phrase_time_limit=5)
         else:
-            audio = r.listen(source)
+            # audio = r.listen(source)
+            audio = r.listen(source, timeout=5, phrase_time_limit=5)
 
     try:
         print("Recognizing...")
@@ -299,7 +305,8 @@ def main():
                 else:
                     minute = 0
                 AlarmTime = hour + minute + seconds
-                speak("Ok, set an alarm for " + str(hours) + " hours, " + str(minutes) + " minutes, " + str(seconds) + " seconds from now")
+                speak("Ok, set an alarm for " + str(hours) + " hours, " + str(minutes) + " minutes, " + str(
+                    seconds) + " seconds from now")
 
                 timerFunc = Timer(0.0, timer, [AlarmTime])
                 timerFunc.start()
@@ -378,7 +385,8 @@ def main():
                     playMusic()
 
             # Basically another wikipedia call, but is like asking a question
-            elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in query or "what are" in query:
+            elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in \
+                    query or "what are" in query:
                 if not os.getenv('WOLF_ALPH_KEY'):
                     config.initialize()
                 searchResponses = ["Gimme a sec", "Let me look for that", "good question, lets see...", "lets see..."]
@@ -404,7 +412,6 @@ def main():
             elif 'play music' in query or 'play some music' in query:
                 playMusic()
 
-
             elif 'the time' in query or 'what is time' in query:
                 strTime = datetime.datetime.now().strftime("%H:%M:%S")
                 speak(f"Sir, the time is {strTime}")
@@ -420,13 +427,15 @@ def main():
                     import webbrowser
                     webbrowser.get('firefox').open_new('about:blank')
 
-            elif 'hide window' in query or 'hide work' in query or 'change window' in query or 'minimise window' in query:
+            elif 'hide window' in query or 'hide work' in query or 'change window' in query or 'minimise window' in \
+                    query:
                 # close in window
                 speak(random.choice(responses))
                 Minimize = win32gui.GetForegroundWindow()
                 win32gui.ShowWindow(Minimize, win32con.SW_MINIMIZE)
 
-            elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize window' in \
+            elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize ' \
+                                                                                                     'window' in \
                     query:
                 speak(random.choice(responses))
                 hwnd = win32gui.GetForegroundWindow()
@@ -481,8 +490,6 @@ def main():
             elif 'what can you do' in query:
                 speak("I can set timers, create calender events, give you todays events, search the web, play music, "
                       "and other small tasks. More to come later")
-
-
 
 
 if __name__ == '__main__':

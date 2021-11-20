@@ -73,7 +73,7 @@ speech = types.SimpleNamespace()
 def init_speech_engine_windows():
     speech.engine = pyttsx3.init('sapi5')
     voices = speech.engine.getProperty('voices')
-    speech.engine.setProperty('voice', voices[0].id)  # 0 is male, 1 is female. -snolte26
+    speech.engine.setProperty('voice', voices[1].id)  # 0 is male, 1 is female. -snolte26
     speech.engine.setProperty('rate', 155)
 
 
@@ -238,6 +238,7 @@ def takeCommands(beep):
             # audio = r.listen(source)
             # I wonder if doing this will help Jarvis actually listen instead of getting stuck after x times
             audio = r.listen(source, timeout=5, phrase_time_limit=5)
+            # well son ofa bitch, it fucking worked
         else:
             # audio = r.listen(source)
             audio = r.listen(source, timeout=5, phrase_time_limit=5)

@@ -283,7 +283,7 @@ def main():
 
         # Normal queries
         wakeUp = takeCommands(False).lower()
-        if WAKE in wakeUp:
+        if WAKE in wakeUp or "plato" in wakeUp:
 
             query = takeCommands(True).lower()
 
@@ -483,14 +483,18 @@ def main():
                 clear()
 
             # This was just for goofs, its from an Eric Andre bit. https://www.youtube.com/watch?v=CDUlz-S11Cw
-            elif "show me this guy's balls please" in query:
+            elif "show me this guy's balls please" in query or "show me this guy's balls" in query:
                 speak("ok, here is this guys balls")
                 webbrowser.open_new(
                     'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
 
             elif 'what can you do' in query:
-                speak("I can set timers, create calender events, give you todays events, search the web, play music, "
+                speak("I can set timers, create calender events, give you today's events, tell the weather, search the "
+                      "web, "
+                      "play music, "
                       "and other small tasks. More to come later")
+            else:
+                speak("Sorry, I didn't quite get that")
 
 
 if __name__ == '__main__':

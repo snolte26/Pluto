@@ -75,6 +75,16 @@ Pluto will also play music hosted onboard from wherever you tell it to look for 
 
 Say something like `Can you Play Some Music` to listen to a random song 
 
+### Sleep
+You can tell Pluto that you are going to bed, and it will stop listening for queries for 8 hours. Pluto will then wake up with you and wait for further commands
+
+Simply say `Goodnight` and Pluto will stop listening until the morning
+
+### Loose Lips Sink Ships
+Need Pluto to stop listening for a little while? Or maybe you're heading out for work or errands? Whatever your reason, you can now tell Pluto to temporarily stop listening for commands
+
+Tell Pluto to `Take a break` or to `Stop Listening` and it will ask how long to stop listening
+
 ### *DESKTOP ONLY*
 Some features only make sense when Pluto is running on a desktop. These include taking a screenshot, locking the screen, and minimizing/full screen windows. Because Pluto runs in a terminal window, you can use the `clean` command to clear all the past requests from the session
 

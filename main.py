@@ -271,7 +271,7 @@ def main():
     while True:
         # Check for start of day time
         currentDT = datetime.datetime.now()
-        if currentDT.strftime("%H:%M") == os.getenv('SoD_TIME'):
+        if currentDT.strftime("%H:%M") == os.getenv('SOD_TIME'):
             weatherZip = os.getenv('ZIP_CODE')
             weather(weatherZip)
             daysEvents()
@@ -312,12 +312,32 @@ def main():
                 timerFunc = Timer(0.0, timer, [AlarmTime])
                 timerFunc.start()
 
-            elif 'open youtube' in query:
-                webbrowser.open_new("youtube.com")
-            elif 'open stackoverflow' in query:
-                webbrowser.open_new("stackoverflow.com")
-            elif 'open github' in query:
-                webbrowser.open_new("github.com")
+            elif 'goodnight' in query or 'good night' in query:
+                speak("Ok, see you tomorrow")
+                time.sleep(28800)
+                newName = random.choice(names)
+                wishMe(newName)
+
+            elif 'take a break' in query or 'stop listening' in query:
+                speak("How many hours")
+                hours = int(takeCommands(True).lower())
+                speak("How many minutes")
+                minutes = int(takeCommands(True).lower())
+                speak("How many seconds")
+                seconds = int(takeCommands(True).lower())
+
+                if hours > 0:
+                    hour = hours * 3600
+                else:
+                    hour = 0
+                if minutes > 0:
+                    minute = minutes * 60
+                else:
+                    minute = 0
+                breakTime = hour + minute + seconds
+
+                speak('Ok, talk to you later')
+                time.sleep(breakTime)
 
             elif 'add event' in query or "add an event" in query or "add a reminder" in query or "add reminder" in \
                     query:
@@ -373,7 +393,7 @@ def main():
                     speak("By the way, we can set up a default zip code, if you want")
 
             elif 'start of day' in query:
-                if not os.getenv('SoD_TIME'):
+                if not os.getenv('SOD_TIME'):
                     speak("Lets set up a time to run every day, first")
                     config.initialize()
                 weatherZip = os.getenv('ZIP_CODE')
@@ -468,7 +488,7 @@ def main():
                 speak("No problem sir.")
 
             elif "hello" in query or "hello Jarvis" in query:
-                hel = "Hello  Sir ! How May i Help you.."
+                hel = "Hello  Sir ! How May I Help you.."
                 print(hel)
                 speak(hel)
 

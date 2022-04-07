@@ -308,12 +308,14 @@ def main():
                 AlarmTime = hour + minute + seconds
                 speak("Ok, set an alarm for " + str(hours) + " hours, " + str(minutes) + " minutes, " + str(
                     seconds) + " seconds from now")
+                os.system('cls')
 
                 timerFunc = Timer(0.0, timer, [AlarmTime])
                 timerFunc.start()
 
             elif 'goodnight' in query or 'good night' in query:
                 speak("Ok, see you tomorrow")
+                os.system('cls')
                 time.sleep(28800)
                 newName = random.choice(names)
                 wishMe(newName)
@@ -337,6 +339,7 @@ def main():
                 breakTime = hour + minute + seconds
 
                 speak('Ok, talk to you later')
+                os.system('cls')
                 time.sleep(breakTime)
 
             elif 'add event' in query or "add an event" in query or "add a reminder" in query or "add reminder" in \
@@ -377,20 +380,24 @@ def main():
                     with open('events.json', 'w') as outfile:
                         json.dump(events, outfile)
                     speak("OK, event created")
+                    os.system('cls')
 
             elif 'reminders' in query or "calendar" in query or "events" in query:
                 daysEvents()
+                os.system('cls')
 
             # If the user wants to know the weather
             elif 'weather' in query or 'temperature' in query:
                 if os.getenv('ZIP_CODE'):
                     zipcode = os.getenv('ZIP_CODE')
                     weather(zipcode)
+                    os.system('cls')
                 else:
                     speak("For what zipcode would you like the weather?")
                     zipcode = takeCommands(True)
                     weather(zipcode)
                     speak("By the way, we can set up a default zip code, if you want")
+                    os.system('cls')
 
             elif 'start of day' in query:
                 if not os.getenv('SOD_TIME'):
@@ -404,6 +411,7 @@ def main():
                 choice = takeCommands(True).lower()
                 if "yes" in choice or "sure" in choice:
                     playMusic()
+                os.system('cls')
 
             # Basically another wikipedia call, but is like asking a question
             elif 'who is' in query or 'how to' in query or 'what is' in query or 'who was' in query or "what was" in \
@@ -428,14 +436,17 @@ def main():
                 except wikipedia.PageError:
                     speak("Damn. Sorry, I couldn't find what you were looking for.")
                     pass
+                os.system('cls')
 
             # Playing music
             elif 'play music' in query or 'play some music' in query:
                 playMusic()
+                os.system('cls')
 
             elif 'the time' in query or 'what is time' in query:
                 strTime = datetime.datetime.now().strftime("%H:%M:%S")
                 speak(f"Sir, the time is {strTime}")
+                os.system('cls')
 
             # Opens Firefox, really only works if you have firefox
             # TODO: Support for default browser? idk
@@ -507,6 +518,10 @@ def main():
                 speak("ok, here is this guys balls")
                 webbrowser.open_new(
                     'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
+            elif 'can you pass a turing test' in query:
+                speak('legally, no.')
+                speak('you may be wondering if i want to be human.')
+                speak('Would you?')
 
             elif 'what can you do' in query:
                 speak("I can set timers, create calender events, give you today's events, tell the weather, search the "

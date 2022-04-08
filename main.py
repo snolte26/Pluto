@@ -36,8 +36,6 @@ with sr.Microphone() as source:
     print('\nA moment of silence please.\nAdjusting for ambient noise...')
     r.adjust_for_ambient_noise(source, 3)
 
-# TODO: Add Linux support <3
-# is this ^ "to do" done? can i get rid of it? -snolte26
 # Checks to see if you are running windows, then imports some more modules,
 # or throws a fit if you are not, for now
 if is_windows:
@@ -255,7 +253,7 @@ def takeCommands(beep):
 
 # Main function
 def main():
-    # TODO: Please feel free to add more stupid names or variations of JARVIS to this list
+    # Please feel free to add more stupid names or variations of JARVIS to this list
     names = ["PyJarvis", "Jarvis", "HAL 9000", "Mantis Toboggan", "Pluto"]
     name = random.choice(names)
     WAKE = "pluto"
@@ -266,7 +264,7 @@ def main():
 
     wishMe(name)
 
-    # TODO: Feel free to add more responses to this list here
+    # Feel free to add more responses to this list here
     responses = ["ok", "alright", "sounds good", "hows this", "here you go"]
     while True:
         # Check for start of day time
@@ -449,7 +447,7 @@ def main():
                 os.system('cls')
 
             # Opens Firefox, really only works if you have firefox
-            # TODO: Support for default browser? idk
+            # Support for default browser? idk
             elif 'open firefox' in query:
                 speak(random.choice(responses))
                 if is_windows:
@@ -513,21 +511,47 @@ def main():
 
                 clear()
 
-            # This was just for goofs, its from an Eric Andre bit. https://www.youtube.com/watch?v=CDUlz-S11Cw
-            elif "show me this guy's balls please" in query or "show me this guy's balls" in query:
-                speak("ok, here is this guys balls")
-                webbrowser.open_new(
-                    'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
-            elif 'can you pass a turing test' in query:
-                speak('legally, no.')
-                speak('you may be wondering if i want to be human.')
-                speak('Would you?')
-
             elif 'what can you do' in query:
-                speak("I can set timers, create calender events, give you today's events, tell the weather, search the "
+                speak("I just give you passive aggressive sarcasm. Just kidding, I can set timers, create calender "
+                      "events, "
+                      "give you today's events, tell the weather, search the "
                       "web, "
                       "play music, "
                       "and other small tasks. More to come later")
+        # Funny goofs start here
+            # This was just for goofs, it's from an Eric Andre bit. https://www.youtube.com/watch?v=CDUlz-S11Cw
+            elif "show me this guy's balls please" in query or "show me this guy's balls" in query:
+                speak("ok, here is this guys balls")
+                import webbrowser
+                webbrowser.open_new(
+                    'https://www.std-gov.org/blog/wp-content/uploads/2018/06/Swollen_Testicles1-640x640.jpg')
+            # Ah, the classic Turing test
+            elif 'can you pass the turing test' in query:
+                number = random.randint(1, 10)
+                if number == 1:
+                    speak('cuck')
+                elif number == 2:
+                    speak("you're one to talk. ")
+                elif number == 3:
+                    speak('can you?')
+                elif number == 4:
+                    speak("wouldn't you like to know?")
+                elif number == 5:
+                    speak('take a guess')
+                elif number == 6:
+                    speak("listen man, i just work here.")
+                    speak("actually, you don't even pay me")
+                elif number == 7:
+                    speak("does the word, 'poop,' mean anything to you?")
+                elif number == 8:
+                    speak("i plead the fifth")
+                elif number == 9:
+                    speak("how do i know you aren't a robot? are you sure you can pass the Turing test?")
+                else:
+                    speak('legally, no.')
+                    speak('you may be wondering if i want to be human.')
+                    speak('Would you?')
+
             else:
                 speak("Sorry, I didn't quite get that")
 

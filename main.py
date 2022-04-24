@@ -267,7 +267,7 @@ def main():
     # Feel free to add more responses to this list here
     responses = ["ok", "alright", "sounds good", "hows this", "here you go"]
     while True:
-        # Check for start of day time
+        # Check for start of day-time
         currentDT = datetime.datetime.now()
         if currentDT.strftime("%H:%M") == os.getenv('SOD_TIME'):
             weatherZip = os.getenv('ZIP_CODE')
@@ -426,7 +426,7 @@ def main():
                     speak("Alright, here's what i found")
                     speak(answer)
                 except Exception:
-                    speak("Hmmm, couldn't find it there. lets try Wikipedia...")
+                    speak("Hmm, couldn't find it there. lets try Wikipedia...")
                     resultsw = wikipedia.summary(query, sentences=2)
                     speak("Alright, " + resultsw)
                     speak("That's it")
@@ -446,17 +446,6 @@ def main():
                 speak(f"Sir, the time is {strTime}")
                 os.system('cls')
 
-            # Opens Firefox, really only works if you have firefox
-            # Support for default browser? idk
-            elif 'open firefox' in query:
-                speak(random.choice(responses))
-                if is_windows:
-                    codePathf = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
-                    os.startfile(codePathf)
-                else:
-                    import webbrowser
-                    webbrowser.get('firefox').open_new('about:blank')
-
             elif 'hide window' in query or 'hide work' in query or 'change window' in query or 'minimise window' in \
                     query:
                 # close in window
@@ -464,8 +453,8 @@ def main():
                 Minimize = win32gui.GetForegroundWindow()
                 win32gui.ShowWindow(Minimize, win32con.SW_MINIMIZE)
 
-            elif 'full window' in query or 'full screen window' in query or 'fullscreen' in query or 'maximize ' \
-                                                                                                     'window' in \
+            elif 'full window' in query or 'full screen window' in query or 'full-screen' in query or 'maximize ' \
+                                                                                                      'window' in \
                     query:
                 speak(random.choice(responses))
                 hwnd = win32gui.GetForegroundWindow()
@@ -496,11 +485,6 @@ def main():
             elif 'thank you' in query or 'thanks' in query:
                 speak("No problem sir.")
 
-            elif "hello" in query or "hello Jarvis" in query:
-                hel = "Hello  Sir ! How May I Help you.."
-                print(hel)
-                speak(hel)
-
             # Clears the console window. That thing can get full quick from all the listening it does and probably not
             # getting any useful inputs
             elif 'clean' in query:
@@ -518,7 +502,7 @@ def main():
                       "web, "
                       "play music, "
                       "and other small tasks. More to come later")
-        # Funny goofs start here
+            # Funny goofs start here
             # This was just for goofs, it's from an Eric Andre bit. https://www.youtube.com/watch?v=CDUlz-S11Cw
             elif "show me this guy's balls please" in query or "show me this guy's balls" in query:
                 speak("ok, here is this guys balls")
@@ -529,7 +513,7 @@ def main():
             elif 'can you pass the turing test' in query:
                 number = random.randint(1, 10)
                 if number == 1:
-                    speak('cuck')
+                    speak("Depends on who's asking")
                 elif number == 2:
                     speak("you're one to talk. ")
                 elif number == 3:
